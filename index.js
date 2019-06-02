@@ -82,6 +82,7 @@ const handleStory = (unsanitizedStory) => {
   return result
 }
 
+let usersNeedUpdate = false
 let users = []
 io.on('connection', (socket) => {
   console.log('a user connected', socket)
@@ -90,21 +91,32 @@ io.on('connection', (socket) => {
     x: 0,
     y: 0
   }
+  usersNeedUpdate = true
   users.push(socketUser)
+  socket.emit('users', users)
   socket.on('move', (move) => {
-    socketUser.x = move.x
-    socketUser.y = move.y
+    if (
+      socketUser.x !== move.x && // only send changes if there -are- changes!
+      socketUser.y !== move.y
+    ) {
+      usersNeedUpdate = true
+      socketUser.x = move.x
+      socketUser.y = move.y
+    }
   })
   socket.on('disconnect', () => {
+    usersNeedUpdate = true
     users = users.filter((user) => user !== socketUser)
-    io.emit('users', users)
   })
   socket.on('story', (story) => {
     socket.emit('response', handleStory(story))
   })
 })
 setInterval(() => {
-  io.emit('users', users)
+  if (usersNeedUpdate) {
+    usersNeedUpdate = false
+    io.emit('users', users)
+  }
 }, 100)
 
 app.post('/stories/', async (request, response) => {

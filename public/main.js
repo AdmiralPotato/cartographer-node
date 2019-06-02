@@ -226,11 +226,15 @@ function moveMap() {
 	alien.x += movement.x / biomeSize;
 	alien.y += movement.y / biomeSize;
 
-	if (currentUser) {
+	if (
+		currentUser &&
+		currentUser.pos.x !== xOff && // only send changes if there -are- changes!
+		currentUser.pos.y !== yOff
+	) {
 		currentUser.pos.x = xOff;
 		currentUser.pos.y = yOff;
+		socket.emit('move', { x: xOff, y: yOff });
 	}
-	socket.emit('move', { x: xOff, y: yOff });
 
 	select('#easttext').html(nf(xOff / 10, 0, 1));
 	select('#northtext').html(nf(yOff / 10, 0, 1));
