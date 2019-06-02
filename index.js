@@ -20,7 +20,7 @@ const adapter = new FileAsync(
           x: 0,
           y: 0,
           text: 'Welcome to the origin.',
-          time: '0/0/0 - The start of time.'
+          time: 0
         }
       ]
     }
@@ -50,7 +50,7 @@ app.use(
 const generateId = () => {
   return crypto.randomBytes(8).toString('hex')
 }
-const storyMask = 'x,y,text,time'.split(',')
+const storyMask = 'x,y,text'.split(',')
 app.post('/stories/', async (request, response) => {
   const incoming = pick(request.body, storyMask)
   const missingProperties = storyMask.filter((name) => !incoming.hasOwnProperty(name))
@@ -63,7 +63,7 @@ app.post('/stories/', async (request, response) => {
       x: parseFloat(incoming.x) || 0,
       y: parseFloat(incoming.y) || 0,
       text: incoming.text,
-      time: incoming.time
+      time: new Date().getTime()
     }
     console.log('New story', {
       sanitizedStory

@@ -1,7 +1,24 @@
+function formatDate (time) {
+	var result = ''
+	if (time === 0) {
+		result = '0/0/0 - The start of time.';
+	} else {
+		var date = new Date(time);
+		var h = date.getHours();
+		var m = date.getMinutes();
+		if (m < 10) m = '0' + m;
+		if (h == 12) h = h + ':' + m + 'pm';
+		else if (h > 12) h = (h - 12) + ':' + m + 'pm';
+		else h = h + ':' + m + 'am';
+		result = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear() + ' - ' + h;
+	}
+	return result;
+}
+
 function Story (x, y, storyText, time) {
 	this.pos = createVector(x, y);
 	this.text = storyText;
-	this.time = time;
+	this.time = formatDate(time);
 
 	this.show = function() {
 		if ((abs(xOff - this.pos.x) < 1.4) && (abs(yOff - this.pos.y) < 1.4)) {

@@ -226,25 +226,16 @@ function handleInput(e) {
 		//create new pin - server save
 		if (dist(xOff, yOff, 0, 0) > pinOriginDistance) {
 			if (!near) {
-			var h = hour();
-			var m = minute();
-
-			if (m < 10) m = '0' + m;
-			if (h == 12) h = h + ':' + m + 'pm';
-			else if (h > 12) h = (h - 12) + ':' + m + 'pm';
-			else h = h + ':' + m + 'am';
-			
-			var time = day() + '/' + month() + '/' + year() + ' - ' + h;
-			
-			var newJSON = {};
-			newJSON.x = xOff;
-			newJSON.y = yOff;
-			newJSON.text = input;
-			newJSON.time = time;
-
-			issueRequest(story, function (response) {
-				append(storyJSON['stories'], response);
-			});
+				issueRequest(
+					{
+						x: xOff,
+						y: yOff,
+						text: input
+					},
+					function (response) {
+						append(storyJSON['stories'], response);
+					}
+				);
 			} else {
 				inputBox.placeholder = 'pin too close to nearby pins';
 				setTimeout(function() {
