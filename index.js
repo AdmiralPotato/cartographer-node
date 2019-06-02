@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path')
 const pick = require('lodash/pick')
+const crypto = require('crypto')
 const express = require('express')
 const lowdb = require('lowdb')
 const FileAsync = require('lowdb/adapters/FileAsync.js')
@@ -15,7 +16,7 @@ const adapter = new FileAsync(
     defaultValue: {
       stories: [
         {
-          id: 0,
+          id: 'f00000000000000d',
           x: 0,
           y: 0,
           text: 'Welcome to the origin.',
@@ -46,10 +47,11 @@ app.use(
   express.static(dataPath)
 )
 
+const generateId = () => {
+  return crypto.randomBytes(8).toString('hex')
+}
 const storyMask = 'x,y,text,time'.split(',')
 app.post('/stories/', async (request, response) => {
-  const posts = await db.get('stories')
-  const id = posts.value().length
   const incoming = pick(request.body, storyMask)
   const missingProperties = storyMask.filter((name) => !incoming.hasOwnProperty(name))
   if (missingProperties.length) {
@@ -57,18 +59,17 @@ app.post('/stories/', async (request, response) => {
     response.json({ error: `Request was missing required parameters: '${missingProperties.join(', ')}'` })
   } else {
     const sanitizedStory = {
-      id,
+      id: generateId(),
       x: parseFloat(incoming.x) || 0,
       y: parseFloat(incoming.y) || 0,
       text: incoming.text,
       time: incoming.time
     }
     console.log('New story', {
-      posts,
       sanitizedStory
     })
     response.json(sanitizedStory)
-    posts.push(sanitizedStory).write()
+    db.get('stories').push(sanitizedStory).write()
   }
 })
 
