@@ -141,4 +141,5 @@ function generateStories() {
 	storyData.forEach(function (data) {
 		append(stories, new Story(data));
 	})
+	document.getElementById('main').className = 'ready';
 }
