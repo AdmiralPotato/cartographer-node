@@ -32,6 +32,7 @@ function setup() {
 			return user
 		})
 	});
+	socket.emit('ready');
 }
 
 function draw() {
@@ -227,13 +228,16 @@ function moveMap() {
 	alien.y += movement.y / biomeSize;
 
 	if (
-		currentUser &&
-		currentUser.pos.x !== xOff && // only send changes if there -are- changes!
-		currentUser.pos.y !== yOff
+		socket.xLast !== xOff && // only send changes if there -are- changes!
+		socket.yLast !== yOff
 	) {
+		socket.emit('move', { x: xOff, y: yOff });
+		socket.xLast = xOff;
+		socket.yLast = yOff;
+	}
+	if (currentUser) {
 		currentUser.pos.x = xOff;
 		currentUser.pos.y = yOff;
-		socket.emit('move', { x: xOff, y: yOff });
 	}
 
 	select('#easttext').html(nf(xOff / 10, 0, 1));

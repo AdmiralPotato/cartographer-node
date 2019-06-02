@@ -93,7 +93,9 @@ io.on('connection', (socket) => {
   }
   usersNeedUpdate = true
   users.push(socketUser)
-  socket.emit('users', users)
+  socket.on('ready', () => {
+    socket.emit('users', users)
+  })
   socket.on('move', (move) => {
     if (
       socketUser.x !== move.x && // only send changes if there -are- changes!
