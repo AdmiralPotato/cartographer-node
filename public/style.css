@@ -54,12 +54,18 @@ html {
 	position: absolute;
 	top: 20px;
 	left: 20px;
+	z-index: 1;
+}
+#root a {
+	display: block;
 	font-size: 14px;
 	text-decoration: none;
 	color: #fff;
+	padding: 4px;
+	border-radius: 4px;
 }
 
-#root:hover {
+#root a:hover {
 	background-color: #000;
 }
 
