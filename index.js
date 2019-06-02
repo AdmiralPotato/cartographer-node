@@ -54,12 +54,16 @@ const generateId = () => {
   return crypto.randomBytes(8).toString('hex')
 }
 const storyMask = 'x,y,text'.split(',')
-app.post('/stories/', async (request, response) => {
-  const incoming = pick(request.body, storyMask)
-  const missingProperties = storyMask.filter((name) => !incoming.hasOwnProperty(name))
+const handleStory = (unsanitizedStory) => {
+  let result
+  const incoming = pick(unsanitizedStory, storyMask)
+  const missingProperties = storyMask.filter((name) => (
+    !incoming.hasOwnProperty(name) ||
+    !incoming[name]
+  ))
   if (missingProperties.length) {
-    response.status(400)
-    response.json({ error: `Request was missing required parameters: '${missingProperties.join(', ')}'` })
+    result = { error: `Request was missing required parameters: '${missingProperties.join(', ')}'` }
+    console.error(result)
   } else {
     const sanitizedStory = {
       id: generateId(),
@@ -71,8 +75,24 @@ app.post('/stories/', async (request, response) => {
     console.log('New story', {
       sanitizedStory
     })
-    response.json(sanitizedStory)
     io.emit('story', sanitizedStory)
     db.get('stories').push(sanitizedStory).write()
+    result = sanitizedStory
   }
+  return result
+}
+
+io.on('connection', (socket) => {
+  console.log('a user connected', socket)
+  socket.on('story', (story) => {
+    socket.emit('response', handleStory(story))
+  })
+})
+
+app.post('/stories/', async (request, response) => {
+  let result = handleStory(request.body)
+  if (result.error) {
+    response.status(400)
+  }
+  response.json(result)
 })

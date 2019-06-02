@@ -18,8 +18,6 @@ function setup() {
 	initializeCloudNoise();
 	generatePoints();
 
-	var socket = io();
-
 	socket.on('story', function (story) {
 		console.log('story via socket', story)
 		append(storyData, story);
@@ -235,13 +233,11 @@ function handleInput(e) {
 		//create new pin - server save
 		if (dist(xOff, yOff, 0, 0) > pinOriginDistance) {
 			if (!near) {
-				issueRequest(
-					{
-						x: xOff,
-						y: yOff,
-						text: input
-					}
-				);
+				socket.emit('story', {
+					x: xOff,
+					y: yOff,
+					text: input
+				})
 			} else {
 				inputBox.placeholder = 'pin too close to nearby pins';
 				setTimeout(function() {
@@ -291,26 +287,4 @@ function passTime() {
 		biomeSunrise(alien, sunrise);
 		currentCloud = p5.Vector.lerp(p5.Vector.div(cloudColor, nightDarkness), cloudColor, sunrise);
 	}
-}
-
-var apiPath = './stories/';
-
-function issueRequest(data, callback) {
-	var xhr = new XMLHttpRequest();
-	xhr.open('POST', apiPath, true);
-	xhr.setRequestHeader('Content-type', 'application/json');
-	xhr.onload = function() {
-		if (xhr.status === 200) {
-			//handle response
-			console.log(xhr.responseText);
-			if (callback) {
-				callback(JSON.parse(xhr.responseText))
-			}
-		}
-		else {
-			//handle error
-			console.log('Did not recieve reply.');
-		}
-	};
-	xhr.send(JSON.stringify(data));
 }

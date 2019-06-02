@@ -95,6 +95,9 @@ var camRotationLeft = 45;
 var camHeight = -30;
 var camZoom = 300;
 
+//communications
+var socket = io();
+
 function initializeBiomes() {
 	//x, y, peak, valley, city, water, water height, height, citychance, cloudchance
 	forest = new Biome(800, 800, createVector(110, 200, 110), createVector(90, 90, 10), createVector(100, 100, 0), createVector(0, 180, 210), oceanHeight, 50, 0.25, 0.4);
