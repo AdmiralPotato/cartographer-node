@@ -82,12 +82,30 @@ const handleStory = (unsanitizedStory) => {
   return result
 }
 
+let users = []
 io.on('connection', (socket) => {
   console.log('a user connected', socket)
+  const socketUser = {
+    id: socket.id,
+    x: 0,
+    y: 0
+  }
+  users.push(socketUser)
+  socket.on('move', (move) => {
+    socketUser.x = move.x
+    socketUser.y = move.y
+  })
+  socket.on('disconnect', () => {
+    users = users.filter((user) => user !== socketUser)
+    io.emit('users', users)
+  })
   socket.on('story', (story) => {
     socket.emit('response', handleStory(story))
   })
 })
+setInterval(() => {
+  io.emit('users', users)
+}, 500)
 
 app.post('/stories/', async (request, response) => {
   let result = handleStory(request.body)

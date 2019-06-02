@@ -22,7 +22,17 @@ function setup() {
 		console.log('story via socket', story)
 		append(storyData, story);
 		append(stories, new Story(story));
-	})
+	});
+	socket.on('users', function (incomingUsers) {
+		console.log('users via socket', users)
+		users = incomingUsers.map(function (userData) {
+			var user = new User(userData)
+			if (user.id === socket.id) {
+				currentUser = user
+			}
+			return user
+		})
+	});
 }
 
 function draw() {
@@ -39,6 +49,9 @@ function draw() {
 
 	for (var i = 0; i < stories.length; i++) {
 		stories[i].show();
+	}
+	for (var i = 0; i < users.length; i++) {
+		users[i].show();
 	}
 }
 
@@ -213,6 +226,12 @@ function moveMap() {
 	desert.y += movement.y / biomeSize;
 	alien.x += movement.x / biomeSize;
 	alien.y += movement.y / biomeSize;
+
+	if (currentUser) {
+		currentUser.pos.x = xOff;
+		currentUser.pos.y = yOff;
+	}
+	socket.emit('move', { x: xOff, y: yOff });
 
 	select('#easttext').html(nf(xOff / 10, 0, 1));
 	select('#northtext').html(nf(yOff / 10, 0, 1));

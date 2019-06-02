@@ -57,6 +57,8 @@ var cloudColor;
 var gridColor;
 var storyTextColor;
 var storyPinColor;
+var userPinColor;
+var selfPinColor;
 
 var nightDarkness = 1.4;
 var cityNightBrightness = 1.4;
@@ -97,6 +99,8 @@ var camZoom = 300;
 
 //communications
 var socket = io();
+var users = [];
+var currentUser
 
 function initializeBiomes() {
 	//x, y, peak, valley, city, water, water height, height, citychance, cloudchance
@@ -110,6 +114,8 @@ function initializeColors() {
 	gridColor = createVector(60, 60, 60);
 	storyTextColor = createVector(255, 255, 255);
 	storyPinColor = createVector(255, 255, 255);
+	userPinColor = createVector(255, 127, 127);
+	selfPinColor = createVector(127, 255, 127);
 	cloudColor = createVector(255, 255, 255);
 	currentCloud = cloudColor;
 }
