@@ -59,7 +59,7 @@ const handleStory = (unsanitizedStory) => {
   const incoming = pick(unsanitizedStory, storyMask)
   const missingProperties = storyMask.filter((name) => (
     !incoming.hasOwnProperty(name) ||
-    !incoming[name]
+    (name === 'text' && !incoming[name])
   ))
   if (missingProperties.length) {
     result = { error: `Request was missing required parameters: '${missingProperties.join(', ')}'` }
