@@ -1,4 +1,5 @@
 assets/media
+scripts/public/credentials.php
 .idea
 node_modules
 
