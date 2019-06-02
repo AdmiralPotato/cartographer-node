@@ -1,7 +1,9 @@
 function preload() {
 	storyFont = loadFont('./Comfortaa-Bold.otf');
-	storyJSON = loadJSON('stories/stories.json');
-	storyData = storyJSON['stories'];
+	storyJSON = loadJSON('stories/stories.json', function () {
+		storyData = storyJSON['stories'];
+		generateStories()
+	});
 	inputBox = document.getElementById('inputBox');
 }
 
@@ -15,7 +17,14 @@ function setup() {
 	initializeColors();
 	initializeCloudNoise();
 	generatePoints();
-	generateStories();
+
+	var socket = io();
+
+	socket.on('story', function (story) {
+		console.log('story via socket', story)
+		append(storyData, story);
+		append(stories, new Story(story));
+	})
 }
 
 function draw() {
@@ -231,9 +240,6 @@ function handleInput(e) {
 						x: xOff,
 						y: yOff,
 						text: input
-					},
-					function (response) {
-						append(storyJSON['stories'], response);
 					}
 				);
 			} else {
@@ -287,18 +293,6 @@ function passTime() {
 	}
 }
 
-function updateStories() {
-	if (storyData) {
-		stories = [];
-		storyData = storyJSON['stories'];
-
-		for (var i = 0; i < storyData.length; i++) {
-			var currentStory = storyData[i];
-			append(stories, new Story(currentStory['x'], currentStory['y'], currentStory['text'], currentStory['time']));
-		}
-	} else console.log('Had trouble loading stories during this ping.');
-}
-
 var apiPath = './stories/';
 
 function issueRequest(data, callback) {
@@ -320,10 +314,3 @@ function issueRequest(data, callback) {
 	};
 	xhr.send(JSON.stringify(data));
 }
-
-//update the stories every second
-setInterval(function() {
-	if (updateStories()) {
-		storyJSON = loadJSON('assets/stories.json', updateStories());
-	}
-}, 1000);

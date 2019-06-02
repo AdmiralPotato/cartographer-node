@@ -15,10 +15,10 @@ function formatDate (time) {
 	return result;
 }
 
-function Story (x, y, storyText, time) {
-	this.pos = createVector(x, y);
-	this.text = storyText;
-	this.time = formatDate(time);
+function Story (config) {
+	this.pos = createVector(config.x, config.y);
+	this.text = config.text;
+	this.time = formatDate(config.time);
 
 	this.show = function() {
 		if ((abs(xOff - this.pos.x) < 1.4) && (abs(yOff - this.pos.y) < 1.4)) {

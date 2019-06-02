@@ -129,9 +129,7 @@ function generatePoints() {
 }
 
 function generateStories() {
-	storyData = storyJSON['stories'];
-	for (var i = 0; i < storyData.length; i++) {
-		var currentStory = storyData[i];
-		append(stories, new Story(currentStory['x'], currentStory['y'], currentStory['text'], currentStory['time']));
-	}
+	storyData.forEach(function (data) {
+		append(stories, new Story(data));
+	})
 }

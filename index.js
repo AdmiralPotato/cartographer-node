@@ -4,6 +4,15 @@ const pick = require('lodash/pick')
 const crypto = require('crypto')
 const express = require('express')
 const lowdb = require('lowdb')
+const app = express()
+const port = (
+  process.env.PORT // because glitch provides this for us
+  || 3000
+)
+const server = app.listen(port, () => {
+  console.log(`Example app listening on port ${port}!`)
+})
+const io = require('socket.io')(server)
 const FileAsync = require('lowdb/adapters/FileAsync.js')
 const dataDir = path.join(__dirname, '.data')
 const dataPath = path.join(dataDir, 'stories.json')
@@ -32,12 +41,6 @@ lowdb(adapter).then(async (result) => {
   console.log('db ready')
   console.log(db.getState())
 })
-
-const app = express()
-const port = (
-  process.env.PORT // because glitch provides this for us
-  || 3000
-)
 
 app.use(express.json()) // for parsing json encoded POST request
 
@@ -69,13 +72,7 @@ app.post('/stories/', async (request, response) => {
       sanitizedStory
     })
     response.json(sanitizedStory)
+    io.emit('story', sanitizedStory)
     db.get('stories').push(sanitizedStory).write()
   }
 })
-
-app.listen(
-  port,
-  () => {
-    console.log(`Example app listening on port ${port}!`)
-  }
-)
