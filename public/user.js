@@ -8,6 +8,10 @@ function User (config) {
 
 User.prototype.show = function() {
 	if (
+		(
+			this.self ||
+			(abs(this.pos.x) + abs(this.pos.y)) !== 0 // don't show other players that haven't moved off 0,0
+		) &&
 		(abs(xOff - this.pos.x) < 1.4) &&
 		(abs(yOff - this.pos.y) < 1.4)
 	) {

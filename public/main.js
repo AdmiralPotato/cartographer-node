@@ -24,7 +24,6 @@ function setup() {
 		append(stories, new Story(story));
 	});
 	socket.on('users', function (incomingUsers) {
-		console.log('users via socket', users)
 		users = incomingUsers.map(function (userData) {
 			var user = new User(userData)
 			if (user.id === socket.id) {

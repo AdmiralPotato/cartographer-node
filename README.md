@@ -1,6 +1,6 @@
 # cartographer-node
 
-A node implementation of @v-exec's lovely Cartographer project, with improvements to the pin management system.
+A node implementation of @v-exec's lovely Cartographer project, with improvements to the pin management system. Live demo is playable at: https://admirals-cartographer-node.glitch.me/
 
 ## Install & Start
 

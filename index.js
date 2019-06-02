@@ -105,7 +105,7 @@ io.on('connection', (socket) => {
 })
 setInterval(() => {
   io.emit('users', users)
-}, 500)
+}, 100)
 
 app.post('/stories/', async (request, response) => {
   let result = handleStory(request.body)
