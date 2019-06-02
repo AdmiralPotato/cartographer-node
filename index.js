@@ -1,11 +1,13 @@
 const fs = require('fs');
 const path = require('path')
+const pick = require('lodash/pick')
 const express = require('express')
 const lowdb = require('lowdb')
 const FileAsync = require('lowdb/adapters/FileAsync.js')
-const dataPath = path.join(__dirname, '.data', 'stories.json')
-if (!fs.existsSync(dataPath)){
-  fs.mkdirSync(dataPath, { recursive: true });
+const dataDir = path.join(__dirname, '.data')
+const dataPath = path.join(dataDir, 'stories.json')
+if (!fs.existsSync(dataDir)){
+  fs.mkdirSync(dataDir, { recursive: true });
 }
 const adapter = new FileAsync(
   dataPath,
@@ -43,6 +45,32 @@ app.use(
   '/stories/stories.json',
   express.static(dataPath)
 )
+
+const storyMask = 'x,y,text,time'.split(',')
+app.post('/stories/', async (request, response) => {
+  const posts = await db.get('stories')
+  const id = posts.value().length
+  const incoming = pick(request.body, storyMask)
+  const missingProperties = storyMask.filter((name) => !incoming.hasOwnProperty(name))
+  if (missingProperties.length) {
+    response.status(400)
+    response.json({ error: `Request was missing required parameters: '${missingProperties.join(', ')}'` })
+  } else {
+    const sanitizedStory = {
+      id,
+      x: parseFloat(incoming.x) || 0,
+      y: parseFloat(incoming.y) || 0,
+      text: incoming.text,
+      time: incoming.time
+    }
+    console.log('New story', {
+      posts,
+      sanitizedStory
+    })
+    response.json(sanitizedStory)
+    posts.push(sanitizedStory).write()
+  }
+})
 
 app.listen(
   port,

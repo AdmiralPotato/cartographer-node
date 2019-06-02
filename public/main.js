@@ -242,8 +242,9 @@ function handleInput(e) {
 			newJSON.text = input;
 			newJSON.time = time;
 
-			append(storyJSON['stories'], newJSON);
-			issueRequest(JSON.stringify(storyJSON));
+			issueRequest(story, function (response) {
+				append(storyJSON['stories'], response);
+			});
 			} else {
 				inputBox.placeholder = 'pin too close to nearby pins';
 				setTimeout(function() {
@@ -307,23 +308,26 @@ function updateStories() {
 	} else console.log('Had trouble loading stories during this ping.');
 }
 
-var apiPath = 'http://exp.v-os.ca/cartographer/scripts/public/writer.php';
+var apiPath = './stories/';
 
-function issueRequest(sText) {
+function issueRequest(data, callback) {
 	var xhr = new XMLHttpRequest();
 	xhr.open('POST', apiPath, true);
-	xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+	xhr.setRequestHeader('Content-type', 'application/json');
 	xhr.onload = function() {
 		if (xhr.status === 200) {
 			//handle response
 			console.log(xhr.responseText);
+			if (callback) {
+				callback(JSON.parse(xhr.responseText))
+			}
 		}
 		else {
 			//handle error
 			console.log('Did not recieve reply.');
 		}
 	};
-	xhr.send(encodeURI('request=write&text=' + sText));
+	xhr.send(JSON.stringify(data));
 }
 
 //update the stories every second
