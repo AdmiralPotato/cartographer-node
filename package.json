@@ -1,0 +1,29 @@
+{
+  "name": "cartographer-node",
+  "version": "1.0.0",
+  "description": "A node implementation of @v-exec's lovely Cartographer project, with improvements to the pin management system",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon --inspect ./index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AdmiralPotato/cartographer-node.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AdmiralPotato/cartographer-node/issues"
+  },
+  "homepage": "https://github.com/AdmiralPotato/cartographer-node#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "lowdb": "^1.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.1",
+    "standard": "^12.0.1"
+  }
+}

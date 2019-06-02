@@ -1,5 +1,5 @@
 function preload() {
-	storyFont = loadFont('assets/Comfortaa-Bold.otf');
+	storyFont = loadFont('./Comfortaa-Bold.otf');
 	storyJSON = loadJSON('stories/stories.json');
 	storyData = storyJSON['stories'];
 	inputBox = document.getElementById('inputBox');

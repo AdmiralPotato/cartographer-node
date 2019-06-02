@@ -1,4 +1,20 @@
-# Cartographer
+# cartographer-node
+
+A node implementation of @v-exec's lovely Cartographer project, with improvements to the pin management system.
+
+## Install & Start
+
+```bash
+git clone https://github.com/AdmiralPotato/cartographer-node
+
+cd cartographer-node
+
+npm install
+
+npm run dev
+```
+
+## Original project description
 
 _Catrographer_ is a procedurally generated persistent multiplayer map featuring biomes, a day/night cycle, and cities.
 

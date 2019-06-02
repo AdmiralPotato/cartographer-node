@@ -1,1 +1,5 @@
 assets/media
+.idea
+node_modules
+
+.data
