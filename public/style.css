@@ -64,7 +64,7 @@ html {
 }
 
 #root a {
-	display: block;
+	display: inline-block;
 	font-size: 14px;
 	text-decoration: none;
 	color: #fff;

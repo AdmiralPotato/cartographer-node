@@ -228,6 +228,7 @@ function moveMap() {
 	alien.y += movement.y / biomeSize;
 
 	if (
+		socket &&
 		socket.xLast !== xOff && // only send changes if there -are- changes!
 		socket.yLast !== yOff
 	) {

@@ -85,11 +85,12 @@ const handleStory = (unsanitizedStory) => {
 let usersNeedUpdate = false
 let users = []
 io.on('connection', (socket) => {
-  console.log('a user connected', socket)
+  console.log('a user connected', socket.id)
   const socketUser = {
     id: socket.id,
     x: 0,
-    y: 0
+    y: 0,
+    hue: parseFloat(Math.random().toString().slice(0,6))
   }
   usersNeedUpdate = true
   users.push(socketUser)
